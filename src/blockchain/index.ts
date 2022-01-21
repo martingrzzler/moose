@@ -6,7 +6,7 @@ export class Blockchain {
         this.chain_ = [Block.genesis()];
     }
 
-    add(data: string[]) {
+    add(data: any) {
         const block = Block.mine(this.last, data);
         this.chain_.push(block);
         return block;

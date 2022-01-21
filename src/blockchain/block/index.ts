@@ -4,14 +4,14 @@ export interface BlockProps {
     ts: number;
     prevHash: string;
     hash: string;
-    data: string[];
+    data: any;
 }
 
 export class Block {
     private ts_: number;
     private prevHash_: string;
     private hash_: string;
-    private data_: string[];
+    private data_: any;
 
     constructor({ ts, prevHash, hash, data }: BlockProps) {
         this.ts_ = ts;
@@ -29,11 +29,11 @@ export class Block {
         });
     }
 
-    private static hash(ts: number, prevHash: string, data: string[]) {
+    private static hash(ts: number, prevHash: string, data: any) {
         return SHA256(`${ts}${prevHash}${data}`).toString();
     }
 
-    static mine(prevBlock: Block, data: string[]) {
+    static mine(prevBlock: Block, data: any) {
         const ts = Date.now();
         const { hash: prevHash } = prevBlock;
         const hash = this.hash(ts, prevHash, data);
@@ -66,7 +66,7 @@ Data     : ${this.data_}`;
         return this.prevHash_;
     }
 
-    set data(d: string[]) {
+    set data(d: any) {
         this.data_ = d;
     }
 }
