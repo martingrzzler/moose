@@ -41,4 +41,28 @@ describe("Blockchain", () => {
 
         expect(chain.isValid()).toEqual(false);
     });
+
+    test("replace with valid chain", () => {
+        let newChain = new Blockchain();
+        newChain.add(["So spricht der Herr"]);
+        expect(() => chain.replace(newChain)).not.toThrow();
+        expect(chain.data).toEqual(newChain.data);
+    });
+    test("replace with invalid chain", () => {
+        let newChain = new Blockchain();
+        newChain.add(["So spricht der Herr"]);
+        newChain.add(["Zarathustra"]);
+
+        newChain.set(
+            1,
+            new Block({
+                ts: Date.now(),
+                prevHash: "some",
+                hash: "hash",
+                data: [],
+            })
+        );
+
+        expect(() => chain.replace(newChain)).toThrow();
+    });
 });

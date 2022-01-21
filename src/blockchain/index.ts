@@ -33,6 +33,10 @@ export class Blockchain {
         return this.chain_[index];
     }
 
+    get data() {
+        return this.chain_;
+    }
+
     set(index: number, block: Block) {
         this.chain_[index] = block;
     }
@@ -50,5 +54,19 @@ export class Blockchain {
             return true;
 
         return false;
+    }
+
+    replace(newChain: Blockchain) {
+        if (!this.isLonger(newChain))
+            throw new Error("new chain is not longer than the current chain");
+        if (!newChain.isValid()) {
+            throw new Error("the new chain is not valid");
+        }
+
+        this.chain_ = newChain.chain_;
+    }
+
+    isLonger(other: Blockchain) {
+        return other.length > this.length;
     }
 }
