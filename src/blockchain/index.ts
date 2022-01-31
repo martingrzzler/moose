@@ -1,4 +1,4 @@
-import { Block } from "./block";
+import { Block, BlockProps } from "./block";
 
 export class Blockchain {
     private chain_: Block[];
@@ -15,7 +15,7 @@ export class Blockchain {
     isValid() {
         if (!this.firstIsGenesis()) return false;
 
-        for (let i = 1; i < this.chain_.length; i++) {
+        for (let i = 1; i < this.length; i++) {
             const block = this.chain_[i];
             const prevBlock = this.chain_[i - 1];
 
@@ -67,6 +67,19 @@ export class Blockchain {
     }
 
     isLonger(other: Blockchain) {
+        console.log(this.length, other.length);
         return other.length > this.length;
+    }
+
+    toJSON() {
+        return JSON.stringify(this.chain_);
+    }
+
+    static fromJSON(data: string) {
+        const chain = new Blockchain();
+        chain.chain_ = JSON.parse(data).map((b: BlockProps) =>
+            Object.assign(new Block(Block.initProps()), b)
+        );
+        return chain;
     }
 }

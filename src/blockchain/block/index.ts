@@ -29,6 +29,10 @@ export class Block {
         });
     }
 
+    static initProps(): BlockProps {
+        return { ts: 0, hash: "", prevHash: "", data: "" };
+    }
+
     private static hash(ts: number, prevHash: string, data: any) {
         return SHA256(`${ts}${prevHash}${data}`).toString();
     }

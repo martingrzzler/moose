@@ -45,6 +45,7 @@ describe("Blockchain", () => {
     test("replace with valid chain", () => {
         let newChain = new Blockchain();
         newChain.add(["So spricht der Herr"]);
+        newChain.add(["So spricht der Herr"]);
         expect(() => chain.replace(newChain)).not.toThrow();
         expect(chain.data).toEqual(newChain.data);
     });
@@ -64,5 +65,16 @@ describe("Blockchain", () => {
         );
 
         expect(() => chain.replace(newChain)).toThrow();
+    });
+    test("deserialize", () => {
+        chain.add("ad acta");
+        chain.add("ad acta");
+
+        const json = chain.toJSON();
+        const deseroalizedChain = Blockchain.fromJSON(json);
+
+        expect(deseroalizedChain.data[1].hash).toEqual(chain.data[1].hash);
+        expect(deseroalizedChain.isValid()).toEqual(true);
+        expect(deseroalizedChain.length).toEqual(3);
     });
 });
