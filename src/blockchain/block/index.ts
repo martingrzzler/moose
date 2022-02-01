@@ -1,6 +1,8 @@
 import { SHA256 } from "crypto-js";
 
-const DIFFICULTY = 4;
+export const TESTING_DIFFICULTY = 1;
+const DIFFICULTY = process.env.NODE_ENV === "test" ? TESTING_DIFFICULTY : 4;
+const MINE_RATE = 3000;
 
 export interface BlockProps {
     ts: number;
@@ -8,6 +10,7 @@ export interface BlockProps {
     hash: string;
     data: any;
     nonce: number;
+    difficulty: number;
 }
 
 export class Block {
@@ -16,13 +19,15 @@ export class Block {
     private hash_: string;
     private data_: any;
     private nonce_: number;
+    private difficulty_: number;
 
-    constructor({ ts, prevHash, hash, data, nonce }: BlockProps) {
+    constructor({ ts, prevHash, hash, data, nonce, difficulty }: BlockProps) {
         this.ts_ = ts;
         this.prevHash_ = prevHash;
         this.hash_ = hash;
         this.data_ = data;
         this.nonce_ = nonce;
+        this.difficulty_ = difficulty;
     }
 
     static genesis() {
@@ -32,33 +37,45 @@ export class Block {
             hash: "GENESIS",
             data: [],
             nonce: 0,
+            difficulty: DIFFICULTY,
         });
     }
 
     static initProps(): BlockProps {
-        return { ts: 0, hash: "", prevHash: "", data: "", nonce: 0 };
+        return {
+            ts: 0,
+            hash: "",
+            prevHash: "",
+            data: "",
+            nonce: 0,
+            difficulty: DIFFICULTY,
+        };
     }
 
     private static hash(
         ts: number,
         prevHash: string,
         data: any,
-        nonce: number
+        nonce: number,
+        difficulty: number
     ) {
-        return SHA256(`${ts}${prevHash}${data}${nonce}`).toString();
+        return SHA256(
+            `${ts}${prevHash}${data}${nonce}${difficulty}`
+        ).toString();
     }
 
     static mine(prevBlock: Block, data: any) {
         let nonce = 0;
         let hash: string;
         let ts: number;
-        const { hash: prevHash } = prevBlock;
+        let { hash: prevHash, difficulty } = prevBlock;
 
         do {
             nonce++;
             ts = Date.now();
-            hash = this.hash(ts, prevHash, data, nonce);
-        } while (!this.puzzleSolved(hash));
+            difficulty = Block.adjustDifficulty(prevBlock, ts);
+            hash = this.hash(ts, prevHash, data, nonce, difficulty);
+        } while (!this.puzzleSolved(hash, difficulty));
 
         return new Block({
             ts,
@@ -66,29 +83,42 @@ export class Block {
             data,
             hash,
             nonce,
+            difficulty,
         });
     }
 
-    private static puzzleSolved(hash: string) {
-        return hash.substring(0, DIFFICULTY) === "0".repeat(DIFFICULTY);
+    private static puzzleSolved(hash: string, difficulty: number) {
+        return hash.substring(0, difficulty) === "0".repeat(difficulty);
     }
 
     static computeHash(block: Block) {
-        const { ts_, prevHash_, data_, nonce_ } = block;
-        return this.hash(ts_, prevHash_, data_, nonce_);
+        const { ts_, prevHash_, data_, nonce_, difficulty_ } = block;
+        return this.hash(ts_, prevHash_, data_, nonce_, difficulty_);
+    }
+
+    private static adjustDifficulty(prevBlock: Block, currentTime: number) {
+        let { difficulty } = prevBlock;
+        return prevBlock.timestamp + MINE_RATE > currentTime
+            ? difficulty + 1
+            : difficulty - 1;
     }
 
     toString() {
         return `Block - 
-Timestamp: ${this.ts_}
-Prev Hash: ${this.prevHash_.substring(0, 10)}
-Hash     : ${this.hash_.substring(0, 10)}
-Data     : ${this.data_}
-Nonce    : ${this.nonce_}`;
+Timestamp  : ${this.ts_}
+Prev Hash  : ${this.prevHash_.substring(0, 10)}
+Hash       : ${this.hash_.substring(0, 10)}
+Data       : ${this.data_}
+Nonce      : ${this.nonce_}
+Difficulty : ${this.difficulty_}`;
     }
 
     get hash() {
         return this.hash_;
+    }
+
+    get difficulty() {
+        return this.difficulty_;
     }
 
     get prevHash() {
@@ -97,5 +127,9 @@ Nonce    : ${this.nonce_}`;
 
     set data(d: any) {
         this.data_ = d;
+    }
+
+    get timestamp() {
+        return this.ts_;
     }
 }

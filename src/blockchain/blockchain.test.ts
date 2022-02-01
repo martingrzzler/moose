@@ -24,7 +24,14 @@ describe("Blockchain", () => {
     test("invalid genesis chain", () => {
         chain.set(
             0,
-            new Block({ ts: Date.now(), hash: "", data: [], prevHash: "" })
+            new Block({
+                ts: Date.now(),
+                hash: "",
+                data: [],
+                prevHash: "",
+                nonce: 0,
+                difficulty: 0,
+            })
         );
         expect(chain.isValid()).toEqual(false);
     });
@@ -61,6 +68,8 @@ describe("Blockchain", () => {
                 prevHash: "some",
                 hash: "hash",
                 data: [],
+                nonce: 0,
+                difficulty: 0,
             })
         );
 
