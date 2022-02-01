@@ -67,7 +67,6 @@ export class Blockchain {
     }
 
     isLonger(other: Blockchain) {
-        console.log(this.length, other.length);
         return other.length > this.length;
     }
 
@@ -75,7 +74,7 @@ export class Blockchain {
         return JSON.stringify(this.chain_);
     }
 
-    static fromJSON(data: string) {
+    static fromJSON(data: string): Blockchain {
         const chain = new Blockchain();
         chain.chain_ = JSON.parse(data).map((b: BlockProps) =>
             Object.assign(new Block(Block.initProps()), b)
