@@ -1,7 +1,5 @@
 import { SHA256 } from "crypto-js";
-import { MININING_DIFFICULTY } from "../../config";
-
-const MINE_RATE = 3000;
+import { MININING_DIFFICULTY, MINE_RATE } from "../../config";
 
 export interface BlockProps {
     ts: number;
