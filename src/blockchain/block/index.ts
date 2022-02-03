@@ -1,7 +1,6 @@
 import { SHA256 } from "crypto-js";
 
-export const TESTING_DIFFICULTY = 1;
-const DIFFICULTY = process.env.NODE_ENV === "test" ? TESTING_DIFFICULTY : 4;
+export const DIFFICULTY = 3;
 const MINE_RATE = 3000;
 
 export interface BlockProps {
@@ -96,8 +95,8 @@ export class Block {
         return this.hash(ts_, prevHash_, data_, nonce_, difficulty_);
     }
 
-    private static adjustDifficulty(prevBlock: Block, currentTime: number) {
-        let { difficulty } = prevBlock;
+    static adjustDifficulty(prevBlock: Block, currentTime: number) {
+        const { difficulty } = prevBlock;
         return prevBlock.timestamp + MINE_RATE > currentTime
             ? difficulty + 1
             : difficulty - 1;
@@ -131,5 +130,9 @@ Difficulty : ${this.difficulty_}`;
 
     get timestamp() {
         return this.ts_;
+    }
+
+    set timestamp(ts: number) {
+        this.ts_ = ts;
     }
 }
