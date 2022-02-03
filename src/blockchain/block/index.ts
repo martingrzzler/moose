@@ -1,6 +1,6 @@
 import { SHA256 } from "crypto-js";
+import { MININING_DIFFICULTY } from "../../config";
 
-export const DIFFICULTY = 3;
 const MINE_RATE = 3000;
 
 export interface BlockProps {
@@ -36,7 +36,7 @@ export class Block {
             hash: "GENESIS",
             data: [],
             nonce: 0,
-            difficulty: DIFFICULTY,
+            difficulty: MININING_DIFFICULTY,
         });
     }
 
@@ -47,7 +47,7 @@ export class Block {
             prevHash: "",
             data: "",
             nonce: 0,
-            difficulty: DIFFICULTY,
+            difficulty: MININING_DIFFICULTY,
         };
     }
 
