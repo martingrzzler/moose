@@ -51,6 +51,28 @@ export class Transaction {
         return transaction;
     }
 
+    update(sender: Wallet, recipient: string, amount: number) {
+        const senderOutput = this.outputs_.find(
+            (o) => o.address === sender.publicKey
+        );
+        if (!senderOutput)
+            throw new Error(
+                "No Output with sender's public key existent in this transactions's outputs"
+            );
+
+        if (!this.input_) throw new Error("Input of this transaction is null");
+
+        if (amount > senderOutput.amount)
+            throw new Error(`Amount: ${amount} exceeds balance`);
+
+        senderOutput.amount = senderOutput.amount - amount;
+        this.outputs_.push({ amount, address: recipient });
+
+        this.input_.signature = sender.sign(this);
+
+        return this;
+    }
+
     verify(): boolean {
         if (!this.input_) throw Error("Input is not defined");
         return Cryptography.verifySignature(

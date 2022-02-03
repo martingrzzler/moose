@@ -43,4 +43,27 @@ describe("Transaction", () => {
         transaction.outputs[0].amount = 50000;
         expect(transaction.verify()).toEqual(false);
     });
+
+    test("update valid transaction", () => {
+        recipient = "new-recipient";
+        amount = 100;
+        transaction = transaction.update(wallet, recipient, amount);
+        expect(transaction.verify()).toEqual(true);
+    });
+
+    test("update invalid transaction throws", () => {
+        recipient = "new-recipient";
+        amount = 100000;
+        expect(() => transaction.update(wallet, recipient, amount)).toThrow(
+            "exceed"
+        );
+    });
+
+    test("invalidates invalid updated transaction", () => {
+        recipient = "new-recipient";
+        amount = 100;
+        transaction = transaction.update(wallet, recipient, amount);
+        transaction.outputs[0].amount = 10000;
+        expect(transaction.verify()).toEqual(false);
+    });
 });
