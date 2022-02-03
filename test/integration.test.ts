@@ -3,7 +3,7 @@ import { Blockchain } from "../src/blockchain";
 describe("Blockchain Block creation", () => {
     let chain: Blockchain;
 
-    beforeAll(() => {
+    beforeEach(() => {
         chain = new Blockchain();
     });
 

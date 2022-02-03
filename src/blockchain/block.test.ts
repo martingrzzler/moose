@@ -1,10 +1,10 @@
-import { Block } from ".";
+import { Block } from "./block";
 
 describe("block", () => {
     let prevBlock: Block;
     let block: Block;
 
-    beforeAll(() => {
+    beforeEach(() => {
         prevBlock = Block.genesis();
         block = Block.mine(prevBlock, "foo");
     });

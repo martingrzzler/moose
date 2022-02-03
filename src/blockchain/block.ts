@@ -1,5 +1,5 @@
-import { SHA256 } from "crypto-js";
-import { MININING_DIFFICULTY, MINE_RATE } from "../../config";
+import { MININING_DIFFICULTY, MINE_RATE } from "../config";
+import { Cryptography } from "../cryptocgraphy";
 
 export interface BlockProps {
     ts: number;
@@ -56,9 +56,9 @@ export class Block {
         nonce: number,
         difficulty: number
     ) {
-        return SHA256(
+        return Cryptography.hash(
             `${ts}${prevHash}${data}${nonce}${difficulty}`
-        ).toString();
+        );
     }
 
     static mine(prevBlock: Block, data: any) {

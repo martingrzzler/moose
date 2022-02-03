@@ -1,5 +1,6 @@
 import { INITIAL_BALANCE } from "../config";
 import { Cryptography } from "../cryptocgraphy";
+import { Transaction } from "./transaction";
 
 export class Wallet {
     private balance_: number;
@@ -10,6 +11,10 @@ export class Wallet {
         this.balance_ = INITIAL_BALANCE;
         this.keyPair_ = Cryptography.genKeyPair();
         this.publicKey_ = this.keyPair_.getPublic().encode("hex", false);
+    }
+
+    sign(transaction: Transaction) {
+        return this.keyPair_.sign(Cryptography.hash(transaction.outputs));
     }
 
     toString() {
