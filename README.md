@@ -1,0 +1,3 @@
+# moose
+A Shitcoin
+
