@@ -97,4 +97,8 @@ export class Transaction {
     get input(): Input | null {
         return this.input_;
     }
+
+    get id() {
+        return this.id_;
+    }
 }
