@@ -5,7 +5,9 @@
   "license": "MIT",
   "scripts": {
     "test": "jest",
-    "start": "nodemon ./src/net/app.ts"
+    "start": "nodemon ./src/net/app.ts",
+    "user2": "./scripts/user2.ps1",
+    "user3": "./scripts/user3.ps1"
   },
   "dependencies": {
     "@babel/preset-env": "^7.16.10",

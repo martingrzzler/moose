@@ -54,19 +54,27 @@ export class P2PServer {
 
     private handleMessage(socket: WebSocket) {
         socket.on("message", (data: string) => {
-            const message: Message = JSON.parse(data);
-            switch (message.type) {
-                case Type.CHAIN:
-                    this.blockchain_.replace(
-                        Blockchain.derserialize(message.data)
-                    );
-                    break;
-                case Type.TRANSACTION:
-                    this.pool_.updateOrAdd(
-                        Transaction.deserialize(message.data)
-                    );
-                default:
-                    throw new Error("Unsupported message type");
+            try {
+                const message: Message = JSON.parse(data);
+
+                switch (message.type) {
+                    case Type.CHAIN:
+                        this.blockchain_.replace(
+                            Blockchain.fromJSON(message.data)
+                        );
+                        break;
+                    case Type.TRANSACTION:
+                        this.pool_.updateOrAdd(
+                            Transaction.fromJSON(message.data)
+                        );
+                        break;
+                    default:
+                        throw new Error(
+                            `Unsupported message type: Message: ${data}`
+                        );
+                }
+            } catch (error: any) {
+                console.log(`Error with Message: ${error.message}`);
             }
         });
     }

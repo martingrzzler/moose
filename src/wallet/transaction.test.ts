@@ -71,7 +71,7 @@ describe("Transaction", () => {
         const json = Transaction.toJSON(transaction);
         const obj = JSON.parse(json);
 
-        const serializedTransaction = Transaction.deserialize(obj);
+        const serializedTransaction = Transaction.fromJSON(obj);
 
         expect(serializedTransaction.id === transaction.id);
     });

@@ -43,8 +43,4 @@ app.listen(PORT, () => {
     console.log(`Listening on port ${PORT}...`);
 });
 
-try {
-    p2pServer.listen();
-} catch (error: any) {
-    console.log(`Error: ${error.message}`);
-}
+p2pServer.listen();
