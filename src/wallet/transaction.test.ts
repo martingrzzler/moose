@@ -69,9 +69,8 @@ describe("Transaction", () => {
 
     test("serialization", () => {
         const json = Transaction.toJSON(transaction);
-        const obj = JSON.parse(json);
 
-        const serializedTransaction = Transaction.fromJSON(obj);
+        const serializedTransaction = Transaction.fromJSON(json);
 
         expect(serializedTransaction.id === transaction.id);
     });
