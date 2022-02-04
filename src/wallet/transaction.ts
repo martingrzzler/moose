@@ -101,4 +101,8 @@ export class Transaction {
     get id() {
         return this.id_;
     }
+
+    get address() {
+        return this.input_?.address;
+    }
 }

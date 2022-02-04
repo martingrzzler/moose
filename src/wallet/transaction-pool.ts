@@ -11,6 +11,12 @@ export class TransactionPool {
         this.transactions_.set(t.id, t);
     }
 
+    findByPubKey(pubKey: string): Transaction | undefined {
+        return new Array(...this.transactions_.values()).find(
+            (t) => t.address === pubKey
+        );
+    }
+
     get(t: Transaction) {
         return this.transactions_.get(t.id);
     }

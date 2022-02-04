@@ -7,7 +7,7 @@ describe("TransactionPool", () => {
     let transaction: Transaction;
     let wallet: Wallet;
 
-    beforeAll(() => {
+    beforeEach(() => {
         pool = new TransactionPool();
         wallet = new Wallet();
         transaction = Transaction.create(wallet, "*&$BSAJHhsdfhj", 30);
