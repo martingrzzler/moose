@@ -24,8 +24,7 @@ app.post("/mine", (req, res) => {
 
     p2pServer.syncChains();
 
-    res.statusCode = 200;
-    res.send();
+    res.send(block);
 });
 
 app.get("/transactions", (req, res) => {
@@ -39,6 +38,9 @@ app.post("/transact", (req, res) => {
     res.json(t);
 });
 
+app.get("/public-key", (req, res) => {
+    res.json({ publicKey: wallet.publicKey });
+});
 app.listen(PORT, () => {
     console.log(`Listening on port ${PORT}...`);
 });
