@@ -80,7 +80,8 @@ describe("Blockchain", () => {
         chain.add("ad acta");
 
         const json = chain.toJSON();
-        const deseroalizedChain = Blockchain.fromJSON(json);
+        const arr = JSON.parse(json);
+        const deseroalizedChain = Blockchain.derserialize(arr);
 
         expect(deseroalizedChain.data[1].hash).toEqual(chain.data[1].hash);
         expect(deseroalizedChain.isValid()).toEqual(true);

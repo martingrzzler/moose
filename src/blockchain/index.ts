@@ -74,9 +74,9 @@ export class Blockchain {
         return JSON.stringify(this.chain_);
     }
 
-    static fromJSON(data: string): Blockchain {
+    static derserialize(data: any): Blockchain {
         const chain = new Blockchain();
-        chain.chain_ = JSON.parse(data).map((b: BlockProps) =>
+        chain.chain_ = data.map((b: BlockProps) =>
             Object.assign(new Block(Block.initProps()), b)
         );
         return chain;

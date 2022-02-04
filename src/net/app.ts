@@ -35,10 +35,16 @@ app.get("/transactions", (req, res) => {
 app.post("/transact", (req, res) => {
     const { recipient, amount } = req.body;
     const t = wallet.createTransaction(recipient, amount, pool);
+    p2pServer.broadcastTransaction(t);
     res.json(t);
 });
 
 app.listen(PORT, () => {
     console.log(`Listening on port ${PORT}...`);
 });
-p2pServer.listen();
+
+try {
+    p2pServer.listen();
+} catch (error: any) {
+    console.log(`Error: ${error.message}`);
+}

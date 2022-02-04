@@ -66,4 +66,13 @@ describe("Transaction", () => {
         transaction.outputs[0].amount = 10000;
         expect(transaction.verify()).toEqual(false);
     });
+
+    test("serialization", () => {
+        const json = Transaction.toJSON(transaction);
+        const obj = JSON.parse(json);
+
+        const serializedTransaction = Transaction.deserialize(obj);
+
+        expect(serializedTransaction.id === transaction.id);
+    });
 });

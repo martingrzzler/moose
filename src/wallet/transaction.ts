@@ -82,6 +82,14 @@ export class Transaction {
         );
     }
 
+    static deserialize(data: any): Transaction {
+        return Object.assign(new Transaction(), data);
+    }
+
+    static toJSON(t: Transaction) {
+        return JSON.stringify(t);
+    }
+
     get outputs() {
         return this.outputs_;
     }

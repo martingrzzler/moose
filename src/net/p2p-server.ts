@@ -1,9 +1,20 @@
 import { Blockchain } from "../blockchain";
 import { Server, WebSocket } from "ws";
 import { TransactionPool } from "../wallet/transaction-pool";
+import { Transaction } from "../wallet/transaction";
 
 const P2P_PORT = process.env.P2P_PORT ? parseInt(process.env.P2P_PORT) : 5001;
 const peers = process.env.PEERS ? process.env.PEERS.split(",") : [];
+
+enum Type {
+    CHAIN = "CHAIN",
+    TRANSACTION = "TRANSACTION",
+}
+
+interface Message {
+    type: Type;
+    data: any;
+}
 
 export class P2PServer {
     private blockchain_: Blockchain;
@@ -42,21 +53,49 @@ export class P2PServer {
     }
 
     private handleMessage(socket: WebSocket) {
-        socket.on("message", (msg: string) => {
-            const otherChain = Blockchain.fromJSON(msg);
-            try {
-                this.blockchain_.replace(otherChain);
-            } catch (error: any) {
-                console.log(`Sync Chain Failure: ${error.message}`);
+        socket.on("message", (data: string) => {
+            const message: Message = JSON.parse(data);
+            switch (message.type) {
+                case Type.CHAIN:
+                    this.blockchain_.replace(
+                        Blockchain.derserialize(message.data)
+                    );
+                    break;
+                case Type.TRANSACTION:
+                    this.pool_.updateOrAdd(
+                        Transaction.deserialize(message.data)
+                    );
+                default:
+                    throw new Error("Unsupported message type");
             }
         });
     }
 
+    sendMessage(s: WebSocket, m: Message) {
+        s.send(JSON.stringify(m));
+    }
+
     sendChain(socket: WebSocket) {
-        socket.send(this.blockchain_.toJSON());
+        const msg: Message = {
+            type: Type.CHAIN,
+            data: this.blockchain_.toJSON(),
+        };
+        this.sendMessage(socket, msg);
+    }
+
+    sendTransaction(s: WebSocket, t: Transaction) {
+        const msg: Message = {
+            type: Type.TRANSACTION,
+            data: Transaction.toJSON(t),
+        };
+        this.sendMessage(s, msg);
     }
 
     syncChains() {
         this.sockets_.forEach((socket) => this.sendChain(socket));
+    }
+
+    broadcastTransaction(t: Transaction) {
+        this.sockets_.forEach((s) => this.sendTransaction(s, t));
     }
 }
