@@ -20,4 +20,8 @@ export class TransactionPool {
     get(t: Transaction) {
         return this.transactions_.get(t.id);
     }
+
+    get transactions() {
+        return new Array(...this.transactions_.values());
+    }
 }

@@ -1,5 +1,6 @@
 import { Blockchain } from "../blockchain";
 import { Server, WebSocket } from "ws";
+import { TransactionPool } from "../wallet/transaction-pool";
 
 const P2P_PORT = process.env.P2P_PORT ? parseInt(process.env.P2P_PORT) : 5001;
 const peers = process.env.PEERS ? process.env.PEERS.split(",") : [];
@@ -7,10 +8,12 @@ const peers = process.env.PEERS ? process.env.PEERS.split(",") : [];
 export class P2PServer {
     private blockchain_: Blockchain;
     private sockets_: WebSocket[];
+    private pool_: TransactionPool;
 
-    constructor(blockchain: Blockchain) {
+    constructor(blockchain: Blockchain, pool: TransactionPool) {
         this.blockchain_ = blockchain;
         this.sockets_ = [];
+        this.pool_ = pool;
     }
 
     listen() {

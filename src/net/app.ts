@@ -1,5 +1,7 @@
 import express from "express";
 import { Blockchain } from "../blockchain";
+import { Wallet } from "../wallet";
+import { TransactionPool } from "../wallet/transaction-pool";
 import { P2PServer } from "./p2p-server";
 
 const PORT = process.env.HTTP_PORT || 8001;
@@ -8,7 +10,9 @@ const app = express();
 app.use(express.json());
 
 const chain = new Blockchain();
-const p2pServer = new P2PServer(chain);
+const wallet = new Wallet();
+const pool = new TransactionPool();
+const p2pServer = new P2PServer(chain, pool);
 
 app.get("/blocks", (req, res) => {
     res.json(chain.data);
@@ -22,6 +26,16 @@ app.post("/mine", (req, res) => {
 
     res.statusCode = 200;
     res.send();
+});
+
+app.get("/transactions", (req, res) => {
+    res.json(pool.transactions);
+});
+
+app.post("/transact", (req, res) => {
+    const { recipient, amount } = req.body;
+    const t = wallet.createTransaction(recipient, amount, pool);
+    res.json(t);
 });
 
 app.listen(PORT, () => {

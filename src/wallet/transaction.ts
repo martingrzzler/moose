@@ -15,8 +15,8 @@ interface Input {
 
 export class Transaction {
     private id_: string;
-    private outputs_: Output[];
     private input_: Input | null;
+    private outputs_: Output[];
 
     private constructor() {
         this.id_ = Cryptography.id();
