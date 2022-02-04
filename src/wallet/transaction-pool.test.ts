@@ -23,4 +23,18 @@ describe("TransactionPool", () => {
         pool.updateOrAdd(transaction);
         expect(pool.get(transaction)).toMatchObject(transaction);
     });
+    test("valid transaction", () => {
+        expect(pool.validTransactions()[0]).toEqual(transaction);
+    });
+    test("invalid transaction is not included", () => {
+        let invalidTransaction = Transaction.create(
+            wallet,
+            "*H#Chdsu087328",
+            50
+        );
+        invalidTransaction.input = { ...invalidTransaction.input!, amount: 10 };
+        expect(
+            pool.validTransactions().find((t) => t.id === invalidTransaction.id)
+        ).toBeUndefined();
+    });
 });
